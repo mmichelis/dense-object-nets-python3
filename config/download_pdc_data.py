@@ -2,12 +2,12 @@ import os
 import sys
 import yaml
 
-print sys.argv
+print(sys.argv)
 
 if len(sys.argv) < 2:
-    print "expected arg to specify which composite dataset .yaml to download data for"
-    print "for example:"
-    print "    python download_pdc_data.py /path/to/pytorch-dense-correspondence/config/dense_correspondence/dataset/composite/caterpillar_upright.yaml"
+    print("expected arg to specify which composite dataset .yaml to download data for")
+    print("for example:")
+    print("    python download_pdc_data.py /path/to/pytorch-dense-correspondence/config/dense_correspondence/dataset/composite/caterpillar_upright.yaml")
     quit()
 
 
@@ -22,8 +22,8 @@ else:
     data_dir = pdc_root_dir
 
 pdc_data_dir = os.path.join(data_dir, "pdc")
-print "data_dir", data_dir
-print "pdc_data_dir", pdc_data_dir
+print("data_dir" + data_dir)
+print("pdc_data_dir" + pdc_data_dir)
 
 def add_datset(path):
     global logs
@@ -53,7 +53,7 @@ download_url_base = "https://data.csail.mit.edu/labelfusion/pdccompressed/"
 
 
 if not os.path.isdir(os.path.join(pdc_data_dir, "evaluation_labeled_data")):
-    print "downloading labeled data"
+    print("downloading labeled data")
     os.chdir(data_dir)
     # note the evaluation_labeled_data_compressed.tar.gz" actually has the form
     # pdc/evaluation_labeled_data so you need to be careful when unpacking it
@@ -62,11 +62,11 @@ if not os.path.isdir(os.path.join(pdc_data_dir, "evaluation_labeled_data")):
     os.system("tar -zxf " + evaluation_data_compressed_path)
     os.system("rm " + evaluation_data_compressed_path)
 else:
-    print "already have labeled data -- skipping ..."
+    print("already have labeled data -- skipping ...")
 
 
-print "Will download these logs if do not already have:"
-print logs
+print("Will download these logs if do not already have:")
+print(logs)
 
 logs_proto_dir = os.path.join(pdc_data_dir, "logs_proto")
 if not os.path.isdir(logs_proto_dir):
@@ -79,10 +79,10 @@ for i, log in enumerate(logs):
     log_path = os.path.join(logs_proto_dir, log)
     log_compressed_path = os.path.join(logs_proto_dir, log+".tar.gz")
     if os.path.isdir(os.path.join(logs_proto_dir, log)):
-        print "already have log",log," -- skipping ..."
+        print("already have log" + log + " -- skipping ...")
         continue
-    print "downloading   log", i+1, "of", len(logs)
-    print "log_compressed_path", log_compressed_path
+    print("downloading   log" + str(i+1) + "of" + str(len(logs)))
+    print("log_compressed_path" + log_compressed_path)
     os.system("rm -rf " + log_compressed_path)
     
     # change to logs_proto dir
@@ -96,4 +96,4 @@ for i, log in enumerate(logs):
     os.system("tar -zvxf" + log_compressed_path)
     os.system("rm -rf " + log_compressed_path)
 
-print "done"
+print("done")
