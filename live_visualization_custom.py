@@ -9,8 +9,9 @@ import copy
 sys.path.append('modules')
 sys.path.append('dense_correspondence/dataset')
 
-os.environ["DC_SOURCE_DIR"] = "/home/michelism/Documents/pytorch-dense-correspondence"
-os.environ["DC_DATA_DIR"] = "/home/michelism/Data/pdc"
+os.environ["DC_SOURCE_DIR"] = os.getcwd()
+# Assuming you put the data dir in dense-correspondence/Data.
+os.environ["DC_DATA_DIR"] = os.path.join(os.getcwd(), "Data", "pdc")
 
 from PIL import Image
 

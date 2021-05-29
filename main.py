@@ -1,19 +1,25 @@
-### Need some extra paths
+### This file replaces the Jupyter Notebooks that you could run. 
+# You can pick if you want to train/evaluate or not. 
+
+TRAIN = False
+EVALUATE = True
+
 import sys, os
 sys.path.append('modules')
 sys.path.append('dense_correspondence/dataset')
 
 ### Set a few environment variables that would've been normally set in Docker
 os.environ["DC_SOURCE_DIR"] = os.getcwd()
-os.environ["DC_DATA_DIR"] = "/home/michelism/Data/pdc"
+# Assuming you put the data dir in dense-correspondence/Data.
+os.environ["DC_DATA_DIR"] = os.path.join(os.getcwd(), "Data", "pdc")
 
 import dense_correspondence_manipulation.utils.utils as utils
 utils.add_dense_correspondence_to_python_path()
 from dense_correspondence.training.training import *
 import logging
 
-#utils.set_default_cuda_visible_devices()
-#utils.set_cuda_visible_devices([0]) # use this to manually set CUDA_VISIBLE_DEVICES
+utils.set_default_cuda_visible_devices()
+utils.set_cuda_visible_devices([0]) # use this to manually set CUDA_VISIBLE_DEVICES
 
 from dense_correspondence.training.training import DenseCorrespondenceTraining
 from dense_correspondence.dataset.spartan_dataset_masked import SpartanDataset
@@ -37,7 +43,7 @@ train_config = utils.getDictFromYamlFilename(train_config_file)
 dataset = SpartanDataset(config=config)
 
 logging_dir = "trained_models/tutorials"
-num_iterations = 3500
+num_iterations = 10000
 d = 3 # the descriptor dimension
 name = "caterpillar_%d" %(d)
 train_config["training"]["logging_dir_name"] = name
@@ -45,8 +51,6 @@ train_config["training"]["logging_dir"] = logging_dir
 train_config["dense_correspondence_network"]["descriptor_dimension"] = d
 train_config["training"]["num_iterations"] = num_iterations
 
-TRAIN = False
-EVALUATE = True
 
 
 

@@ -1,3 +1,53 @@
+
+# Update to Python 3
+
+As the original was intended for Python 2 and a lot of libraries have become outdated in the meantime, this fork intends to use the code for Python 3 with newer versions of PyTorch such that e.g. CUDA 11 is supported as well. 
+
+We have provided an Anaconda environment, but feel free to install the dependencies as you wish. Especially Pytorch, make sure you have the cuda version that fits your GPU. By default we have `pytorch=1.8.1=py3.8_cuda11.1_cudnn8.0.5_0`.
+
+This should run everything without Docker, relative paths are used so run `main.py` and `live_visualization_custom.py` in the repository of `/dense_correspondence`. Similarly, when downloading the data, by default the paths are configured to point to `/Data` in the main repository (`/` is this repository directory).
+
+The use of YAML files is quite ubiquitous in the original repository, while this fork intends to keep editing these YAML files to a minimum, we need to adjust one of them while evaluating our trained network: `config/dense_correspondence/evaluation/evaluation.yaml`. This one has "path_to_network_params : trained_models/tutorials/caterpillar_3/003501.pth" as a key which is hard coded. The "003501" stands for the number of iterations your network was trained for. By default this should indeed be 3500 (in "main.py"), but this should be adjusted in both if you wish to train for more or less iterations.
+
+After training, testing on some custom images can be done with "live_visualization_custom.py", where in line 104 - 105 you can pick a pair of images that we will visualize and can interactively see point correspondence with, using the mouse in the first image (OpenCV windows will pop up when running this file). This is by no means a clean way of doing it, but this is how you can test what you have.
+
+
+### NOTE: not all files have been checked for Python 3 compatibility yet, but this should mostly be print statements that need to be adjusted.
+
+
+## Getting it working
+
+More or less the same as the original, just without Docker:
+### Step 1
+```
+git clone https://github.com/RobotLocomotion/pytorch-dense-correspondence.git
+```
+
+### Step 2
+This only gets a bit of the data, things will be different if you want all data.
+```
+# navigate to the root of the project so paths can be inferred
+cd pytorch-dense-correspondence
+python config/download_pdc_data.py config/dense_correspondence/dataset/composite/caterpillar_upright.yaml ./Data
+```
+
+### Step 3
+```
+git submodule update --init --recursive
+```
+
+### Step 4
+Lastly we get the required environment packages. Anaconda is the most convenient, but you can do it without as well. The most important packages are just numpy, scipy and pytorch. There might be a few more, but you'll have to install them as the errors appear while running the code.
+```
+conda create -f environment.yml
+```
+
+
+
+
+
+
+# Original README starts here
 ### Updates 
 
 - September 4, 2018: Tutorial and data now available!  [We have a tutorial now available here](./doc/tutorial_getting_started.md), which walks through step-by-step of getting this repo running.
