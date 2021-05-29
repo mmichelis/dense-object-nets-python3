@@ -28,7 +28,7 @@ This only gets a bit of the data, things will be different if you want all data.
 ```
 # navigate to the root of the project so paths can be inferred
 cd pytorch-dense-correspondence
-python config/download_pdc_data.py config/dense_correspondence/dataset/composite/caterpillar_upright.yaml ./Data
+python config/download_pdc_data.py config/dense_correspondence/dataset/composite/caterpillar_upright.yaml /full/path/to/dense_correspondence/Data
 ```
 
 ### Step 3
