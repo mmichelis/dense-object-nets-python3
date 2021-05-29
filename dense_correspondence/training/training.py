@@ -365,8 +365,8 @@ class DenseCorrespondenceTraining(object):
                 im2 = np.ascontiguousarray(im2)
 
                 # First show the matches:
-                match_pixels_a = np.stack([matches_a % 640, matches_a // 640], axis=1)
-                match_pixels_b = np.stack([matches_b % 640, matches_b // 640], axis=1)
+                match_pixels_a = np.stack([blind_non_matches_a % 640, blind_non_matches_a // 640], axis=1)
+                match_pixels_b = np.stack([blind_non_matches_b % 640, blind_non_matches_b // 640], axis=1)
 
                 iter = 0
                 for m_a, m_b in zip(match_pixels_a, match_pixels_b):
