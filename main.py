@@ -43,7 +43,7 @@ train_config = utils.getDictFromYamlFilename(train_config_file)
 dataset = SpartanDataset(config=config)
 
 logging_dir = "trained_models/tutorials"
-num_iterations = 10000
+num_iterations = 3500
 d = 3 # the descriptor dimension
 name = "caterpillar_%d" %(d)
 train_config["training"]["logging_dir_name"] = name
