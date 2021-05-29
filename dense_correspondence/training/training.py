@@ -203,7 +203,7 @@ class DenseCorrespondenceTraining(object):
 
         self._dcn = self.build_network()
         self._dcn.load_state_dict(torch.load(model_param_file))
-        #self._dcn.cuda()
+        self._dcn.cuda()
         self._dcn.train()
 
         self._optimizer = self._construct_optimizer(self._dcn.parameters())
@@ -252,7 +252,7 @@ class DenseCorrespondenceTraining(object):
 
         # make sure network is using cuda and is in train mode
         dcn = self._dcn
-        #dcn.cuda()
+        dcn.cuda()
         dcn.train()
 
         optimizer = self._optimizer
@@ -309,19 +309,19 @@ class DenseCorrespondenceTraining(object):
 
                 data_type = metadata["type"][0]
                 
-                # img_a = Variable(img_a.cuda(), requires_grad=False)
-                # img_b = Variable(img_b.cuda(), requires_grad=False)
+                img_a = Variable(img_a.cuda(), requires_grad=False)
+                img_b = Variable(img_b.cuda(), requires_grad=False)
 
-                # matches_a = Variable(matches_a.cuda().squeeze(0), requires_grad=False)
-                # matches_b = Variable(matches_b.cuda().squeeze(0), requires_grad=False)
-                # masked_non_matches_a = Variable(masked_non_matches_a.cuda().squeeze(0), requires_grad=False)
-                # masked_non_matches_b = Variable(masked_non_matches_b.cuda().squeeze(0), requires_grad=False)
+                matches_a = Variable(matches_a.cuda().squeeze(0), requires_grad=False)
+                matches_b = Variable(matches_b.cuda().squeeze(0), requires_grad=False)
+                masked_non_matches_a = Variable(masked_non_matches_a.cuda().squeeze(0), requires_grad=False)
+                masked_non_matches_b = Variable(masked_non_matches_b.cuda().squeeze(0), requires_grad=False)
 
-                # background_non_matches_a = Variable(background_non_matches_a.cuda().squeeze(0), requires_grad=False)
-                # background_non_matches_b = Variable(background_non_matches_b.cuda().squeeze(0), requires_grad=False)
+                background_non_matches_a = Variable(background_non_matches_a.cuda().squeeze(0), requires_grad=False)
+                background_non_matches_b = Variable(background_non_matches_b.cuda().squeeze(0), requires_grad=False)
 
-                # blind_non_matches_a = Variable(blind_non_matches_a.cuda().squeeze(0), requires_grad=False)
-                # blind_non_matches_b = Variable(blind_non_matches_b.cuda().squeeze(0), requires_grad=False)
+                blind_non_matches_a = Variable(blind_non_matches_a.cuda().squeeze(0), requires_grad=False)
+                blind_non_matches_b = Variable(blind_non_matches_b.cuda().squeeze(0), requires_grad=False)
 
 
                 # img_a = Variable(img_a.cuda(), requires_grad=False)
@@ -340,20 +340,20 @@ class DenseCorrespondenceTraining(object):
                 # blind_non_matches_b = Variable(blind_non_matches_b.cuda().squeeze(0)[blind_non_matches_b.squeeze(0)<img_a.shape[-2]*img_a.shape[-1]], requires_grad=False)
 
 
-                img_a = Variable(img_a, requires_grad=False)
-                img_b = Variable(img_b, requires_grad=False)
+                # img_a = Variable(img_a, requires_grad=False)
+                # img_b = Variable(img_b, requires_grad=False)
 
-                matches_a = Variable(matches_a.squeeze(0), requires_grad=False)
-                matches_b = Variable(matches_b.squeeze(0), requires_grad=False)
-                masked_non_matches_a = Variable(masked_non_matches_a.squeeze(0), requires_grad=False)
-                masked_non_matches_b = Variable(masked_non_matches_b.squeeze(0), requires_grad=False)
+                # matches_a = Variable(matches_a.squeeze(0), requires_grad=False)
+                # matches_b = Variable(matches_b.squeeze(0), requires_grad=False)
+                # masked_non_matches_a = Variable(masked_non_matches_a.squeeze(0), requires_grad=False)
+                # masked_non_matches_b = Variable(masked_non_matches_b.squeeze(0), requires_grad=False)
 
-                # It seems that it's always non matches b that stick out
-                background_non_matches_a = Variable(background_non_matches_a.squeeze(0), requires_grad=False)
-                background_non_matches_b = Variable(background_non_matches_b.squeeze(0), requires_grad=False)
+                # # It seems that it's always non matches b that stick out
+                # background_non_matches_a = Variable(background_non_matches_a.squeeze(0), requires_grad=False)
+                # background_non_matches_b = Variable(background_non_matches_b.squeeze(0), requires_grad=False)
 
-                blind_non_matches_a = Variable(blind_non_matches_a.squeeze(0), requires_grad=False)
-                blind_non_matches_b = Variable(blind_non_matches_b.squeeze(0), requires_grad=False)
+                # blind_non_matches_a = Variable(blind_non_matches_a.squeeze(0), requires_grad=False)
+                # blind_non_matches_b = Variable(blind_non_matches_b.squeeze(0), requires_grad=False)
 
 
                 if (len(masked_non_matches_b)!=0 and max(masked_non_matches_b) > 307200) or max(masked_non_matches_a) > 307200 or max(blind_non_matches_a) > 307200 or (len(blind_non_matches_b)!=0 and max(blind_non_matches_b) > 307200) or max(background_non_matches_a) > 307200 or (len(background_non_matches_b)!=0 and max(background_non_matches_b) > 307200): 
