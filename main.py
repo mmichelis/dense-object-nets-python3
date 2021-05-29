@@ -45,7 +45,7 @@ train_config["training"]["logging_dir"] = logging_dir
 train_config["dense_correspondence_network"]["descriptor_dimension"] = d
 train_config["training"]["num_iterations"] = num_iterations
 
-TRAIN = True
+TRAIN = False
 EVALUATE = True
 
 
