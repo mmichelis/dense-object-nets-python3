@@ -26,10 +26,14 @@ apt install --no-install-recommends \
 pip install --upgrade pip==9.0.3
 pip install -U setuptools
 
-apt-get -y install ipython ipython-notebook
+apt-get -y install ipython
+apt-get -y install ipython-notebook
 pip install \
+  qtconsole==4.7.7\
+  pyrsistent==0.16.1\
+  imageio==2.6.0\
   jupyter \
-  opencv-python \
+  opencv-python==4.2.0.32 \
   plyfile \
   pandas \
   tensorflow \

@@ -1,9 +1,12 @@
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
+#FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:11.2.0-cudnn8-devel-ubuntu16.04
 
 ARG USER_NAME
 ARG USER_PASSWORD
 ARG USER_ID
 ARG USER_GID
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
 RUN apt install sudo
@@ -17,6 +20,7 @@ RUN groupmod -g $USER_GID $USER_NAME
 
 WORKDIR /home/$USER_NAME
 ENV USER_HOME_DIR=/home/$USER_NAME
+
 
 
 COPY ./install_dependencies.sh /tmp/install_dependencies.sh

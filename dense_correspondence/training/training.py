@@ -86,6 +86,8 @@ class DenseCorrespondenceTraining(object):
         batch_size = self._config['training']['batch_size']
         num_workers = self._config['training']['num_workers']
 
+        import pdb; pdb.set_trace()
+
         if self._dataset is None:
             self._dataset = SpartanDataset.make_default_10_scenes_drill()
 
@@ -93,8 +95,8 @@ class DenseCorrespondenceTraining(object):
         self._dataset.load_all_pose_data()
         self._dataset.set_parameters_from_training_config(self._config)
 
-        self._data_loader = torch.utils.data.DataLoader(self._dataset, batch_size=batch_size,
-                                          shuffle=True, num_workers=num_workers, drop_last=True)
+        self._data_loader = torch.utils.data.DataLoader(self._dataset, batch_size=1,
+                                          shuffle=False, num_workers=1, drop_last=True)
 
         # create a test dataset
         if self._config["training"]["compute_test_loss"]:
@@ -154,7 +156,7 @@ class DenseCorrespondenceTraining(object):
         d['train'] = dict()
         d['test'] = dict()
 
-        for key, val in d.iteritems():
+        for key, val in d.items():
             for field in logging_dict[key].keys():
                 vec = logging_dict[key][field]
 
@@ -196,14 +198,14 @@ class DenseCorrespondenceTraining(object):
             model_param_file = prefix + ".pth"
             optim_param_file = prefix + ".pth.opt"
 
-        print "model_param_file", model_param_file
+        print("model_param_file" + model_param_file)
         model_param_file = os.path.join(model_folder, model_param_file)
         optim_param_file = os.path.join(model_folder, optim_param_file)
 
 
         self._dcn = self.build_network()
         self._dcn.load_state_dict(torch.load(model_param_file))
-        self._dcn.cuda()
+        #self._dcn.cuda()
         self._dcn.train()
 
         self._optimizer = self._construct_optimizer(self._dcn.parameters())
@@ -252,7 +254,7 @@ class DenseCorrespondenceTraining(object):
 
         # make sure network is using cuda and is in train mode
         dcn = self._dcn
-        dcn.cuda()
+        #dcn.cuda()
         dcn.train()
 
         optimizer = self._optimizer
@@ -300,27 +302,88 @@ class DenseCorrespondenceTraining(object):
                 background_non_matches_a, background_non_matches_b, \
                 blind_non_matches_a, blind_non_matches_b, \
                 metadata = data
+                print(f"Doing iteration {i} now with data: {metadata}")
 
                 if (match_type == -1).all():
-                    print "\n empty data, continuing \n"
+                    print("\n empty data, continuing \n")
                     continue
 
 
                 data_type = metadata["type"][0]
                 
-                img_a = Variable(img_a.cuda(), requires_grad=False)
-                img_b = Variable(img_b.cuda(), requires_grad=False)
+                # img_a = Variable(img_a.cuda(), requires_grad=False)
+                # img_b = Variable(img_b.cuda(), requires_grad=False)
 
-                matches_a = Variable(matches_a.cuda().squeeze(0), requires_grad=False)
-                matches_b = Variable(matches_b.cuda().squeeze(0), requires_grad=False)
-                masked_non_matches_a = Variable(masked_non_matches_a.cuda().squeeze(0), requires_grad=False)
-                masked_non_matches_b = Variable(masked_non_matches_b.cuda().squeeze(0), requires_grad=False)
+                # matches_a = Variable(matches_a.cuda().squeeze(0), requires_grad=False)
+                # matches_b = Variable(matches_b.cuda().squeeze(0), requires_grad=False)
+                # masked_non_matches_a = Variable(masked_non_matches_a.cuda().squeeze(0), requires_grad=False)
+                # masked_non_matches_b = Variable(masked_non_matches_b.cuda().squeeze(0), requires_grad=False)
 
-                background_non_matches_a = Variable(background_non_matches_a.cuda().squeeze(0), requires_grad=False)
-                background_non_matches_b = Variable(background_non_matches_b.cuda().squeeze(0), requires_grad=False)
+                # background_non_matches_a = Variable(background_non_matches_a.cuda().squeeze(0), requires_grad=False)
+                # background_non_matches_b = Variable(background_non_matches_b.cuda().squeeze(0), requires_grad=False)
 
-                blind_non_matches_a = Variable(blind_non_matches_a.cuda().squeeze(0), requires_grad=False)
-                blind_non_matches_b = Variable(blind_non_matches_b.cuda().squeeze(0), requires_grad=False)
+                # blind_non_matches_a = Variable(blind_non_matches_a.cuda().squeeze(0), requires_grad=False)
+                # blind_non_matches_b = Variable(blind_non_matches_b.cuda().squeeze(0), requires_grad=False)
+
+
+                # img_a = Variable(img_a.cuda(), requires_grad=False)
+                # img_b = Variable(img_b.cuda(), requires_grad=False)
+
+                # matches_a = Variable(matches_a.cuda().squeeze(0), requires_grad=False)
+                # matches_b = Variable(matches_b.cuda().squeeze(0), requires_grad=False)
+                # masked_non_matches_a = Variable(masked_non_matches_a.cuda().squeeze(0)[masked_non_matches_b.squeeze(0)<img_a.shape[-2]*img_a.shape[-1]], requires_grad=False)
+                # masked_non_matches_b = Variable(masked_non_matches_b.cuda().squeeze(0)[masked_non_matches_b.squeeze(0)<img_a.shape[-2]*img_a.shape[-1]], requires_grad=False)
+
+                # # It seems that it's always non matches b that stick out
+                # background_non_matches_a = Variable(background_non_matches_a.cuda().squeeze(0)[background_non_matches_b.squeeze(0)<img_a.shape[-2]*img_a.shape[-1]], requires_grad=False)
+                # background_non_matches_b = Variable(background_non_matches_b.cuda().squeeze(0)[background_non_matches_b.squeeze(0)<img_a.shape[-2]*img_a.shape[-1]], requires_grad=False)
+
+                # blind_non_matches_a = Variable(blind_non_matches_a.cuda().squeeze(0)[blind_non_matches_b.squeeze(0)<img_a.shape[-2]*img_a.shape[-1]], requires_grad=False)
+                # blind_non_matches_b = Variable(blind_non_matches_b.cuda().squeeze(0)[blind_non_matches_b.squeeze(0)<img_a.shape[-2]*img_a.shape[-1]], requires_grad=False)
+
+
+                img_a = Variable(img_a, requires_grad=False)
+                img_b = Variable(img_b, requires_grad=False)
+
+                matches_a = Variable(matches_a.squeeze(0), requires_grad=False)
+                matches_b = Variable(matches_b.squeeze(0), requires_grad=False)
+                masked_non_matches_a = Variable(masked_non_matches_a.squeeze(0), requires_grad=False)
+                masked_non_matches_b = Variable(masked_non_matches_b.squeeze(0), requires_grad=False)
+
+                # It seems that it's always non matches b that stick out
+                background_non_matches_a = Variable(background_non_matches_a.squeeze(0), requires_grad=False)
+                background_non_matches_b = Variable(background_non_matches_b.squeeze(0), requires_grad=False)
+
+                blind_non_matches_a = Variable(blind_non_matches_a.squeeze(0), requires_grad=False)
+                blind_non_matches_b = Variable(blind_non_matches_b.squeeze(0), requires_grad=False)
+
+
+                import cv2
+                im1 = (255*(img_a-img_a.min())/(img_a.max()-img_a.min()))[0].numpy().astype('uint8').transpose([1,2,0])
+                im1 = np.ascontiguousarray(im1)
+                im2 = (255*(img_b-img_b.min())/(img_b.max()-img_b.min()))[0].numpy().astype('uint8').transpose([1,2,0])
+                im2 = np.ascontiguousarray(im2)
+
+                # First show the matches:
+                match_pixels_a = np.stack([matches_a % 640, matches_a // 640], axis=1)
+                match_pixels_b = np.stack([matches_b % 640, matches_b // 640], axis=1)
+
+                iter = 0
+                for m_a, m_b in zip(match_pixels_a, match_pixels_b):
+                    iter += 1
+                    color = (np.random.choice(range(256), size=3)).tolist()
+                    im1 = cv2.circle(im1, m_a, 5, color)
+                    im2 = cv2.circle(im2, m_b, 5, color)
+
+                    if iter > 5:
+                        break
+
+                cv2.imwrite("debug.png", np.hstack([im1, im2]))
+
+                import pdb; pdb.set_trace()
+
+                if (len(masked_non_matches_b)!=0 and max(masked_non_matches_b) > 307200) or max(masked_non_matches_a) > 307200 or max(blind_non_matches_a) > 307200 or (len(blind_non_matches_b)!=0 and max(blind_non_matches_b) > 307200) or max(background_non_matches_a) > 307200 or (len(background_non_matches_b)!=0 and max(background_non_matches_b) > 307200): 
+                    import pdb; pdb.set_trace()
 
                 optimizer.zero_grad()
                 self.adjust_learning_rate(optimizer, loss_current_iteration)
@@ -473,7 +536,7 @@ class DenseCorrespondenceTraining(object):
 
         self._logging_dir = os.path.join(utils.convert_data_relative_path_to_absolute_path(self._config['training']['logging_dir']), dir_name)
 
-        print "logging_dir:", self._logging_dir
+        print("logging_dir:" + self._logging_dir)
 
         if os.path.isdir(self._logging_dir):
             shutil.rmtree(self._logging_dir)

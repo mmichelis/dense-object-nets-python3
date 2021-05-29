@@ -136,6 +136,7 @@ def add_dense_correspondence_to_python_path():
 
     # TODO Pete: potentially only add the pytorch-segmentation-detection stuff 
     # if using this backbone architecture
+
     sys.path.append(os.path.join(dc_source_dir, 'external/pytorch-segmentation-detection'))
 
     # for some reason it is critical that this be at the beginning . . .

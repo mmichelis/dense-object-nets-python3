@@ -162,6 +162,7 @@ class DenseCorrespondenceDataset(data.Dataset):
             num_non_matches_per_match=self.num_non_matches_per_match, img_b_mask=image_b_mask)
 
         if self.debug:
+            import pdb; pdb.set_trace()
             # only want to bring in plotting code if in debug mode
             import correspondence_plotter
 
@@ -557,36 +558,36 @@ class DenseCorrespondenceDataset(data.Dataset):
 
         p = training_config["training"]["data_type_probabilities"]["SINGLE_OBJECT_WITHIN_SCENE"] 
         if p > 0:
-            print "using SINGLE_OBJECT_WITHIN_SCENE"
+            print("using SINGLE_OBJECT_WITHIN_SCENE")
             self._data_load_types.append(SpartanDatasetDataType.SINGLE_OBJECT_WITHIN_SCENE)
             self._data_load_type_probabilities.append(p)
 
         p = training_config["training"]["data_type_probabilities"]["SINGLE_OBJECT_ACROSS_SCENE"]
         if p > 0:
-            print "using SINGLE_OBJECT_ACROSS_SCENE"
+            print("using SINGLE_OBJECT_ACROSS_SCENE")
             self._data_load_types.append(SpartanDatasetDataType.SINGLE_OBJECT_ACROSS_SCENE)
             self._data_load_type_probabilities.append(p)
 
         p = training_config["training"]["data_type_probabilities"]["DIFFERENT_OBJECT"]
         if p > 0:
-            print "using DIFFERENT_OBJECT"
+            print("using DIFFERENT_OBJECT")
             self._data_load_types.append(SpartanDatasetDataType.DIFFERENT_OBJECT)
             self._data_load_type_probabilities.append(p)
 
         p = training_config["training"]["data_type_probabilities"]["MULTI_OBJECT"]
         if p > 0:
-            print "using MULTI_OBJECT"
+            print("using MULTI_OBJECT")
             self._data_load_types.append(SpartanDatasetDataType.MULTI_OBJECT)
             self._data_load_type_probabilities.append(p)
 
         p = training_config["training"]["data_type_probabilities"]["SYNTHETIC_MULTI_OBJECT"]
         if p > 0:
-            print "using SYNTHETIC_MULTI_OBJECT"
+            print("using SYNTHETIC_MULTI_OBJECT")
             self._data_load_types.append(SpartanDatasetDataType.SYNTHETIC_MULTI_OBJECT)
             self._data_load_type_probabilities.append(p)
 
         self._data_load_type_probabilities = np.array(self._data_load_type_probabilities)
-        self._data_load_type_probabilities /= np.sum(self._data_load_type_probabilities)
+        self._data_load_type_probabilities = np.divide(self._data_load_type_probabilities, np.sum(self._data_load_type_probabilities))
 
     def set_train_mode(self):
         self.mode = "train"
@@ -716,9 +717,9 @@ class DenseCorrespondenceDataset(data.Dataset):
         plt.show()
         plt.imshow(image_a_depth)
         plt.show()
-        print "image_a_pose", image_a_pose
+        print("image_a_pose" + image_a_pose)
         plt.imshow(image_b_rgb)
         plt.show()
         plt.imshow(image_b_depth)
         plt.show()
-        print "image_b_pose", image_b_pose
+        print("image_b_pose" + image_b_pose)

@@ -65,7 +65,7 @@ def flip_vertical(images, uv_pixel_positions):
     """
     mutated_images = [ImageOps.flip(image) for image in images]
     v_pixel_positions = uv_pixel_positions[1]
-    mutated_v_pixel_positions = (image.height-1) - v_pixel_positions
+    mutated_v_pixel_positions = (images[0].height-1) - v_pixel_positions
     mutated_uv_pixel_positions = (uv_pixel_positions[0], mutated_v_pixel_positions)
     return mutated_images, mutated_uv_pixel_positions
 
@@ -79,7 +79,7 @@ def flip_horizontal(images, uv_pixel_positions):
 
     mutated_images = [ImageOps.mirror(image) for image in images]
     u_pixel_positions = uv_pixel_positions[0]
-    mutated_u_pixel_positions = (image.width-1) - u_pixel_positions
+    mutated_u_pixel_positions = (images[0].width-1) - u_pixel_positions
     mutated_uv_pixel_positions = (mutated_u_pixel_positions, uv_pixel_positions[1])
     return mutated_images, mutated_uv_pixel_positions
 

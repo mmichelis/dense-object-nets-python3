@@ -319,7 +319,7 @@ def create_non_correspondences(uv_b_matches, img_b_shape, num_non_matches_per_ma
         img_b_mask_flat = img_b_mask.view(-1,1).squeeze(1)
         mask_b_indices_flat = torch.nonzero(img_b_mask_flat)
         if len(mask_b_indices_flat) == 0:
-            print "warning, empty mask b"
+            print("warning, empty mask b")
             uv_b_non_matches = get_random_uv_b_non_matches()
         else:
             num_samples = num_matches*num_non_matches_per_match
@@ -333,7 +333,7 @@ def create_non_correspondences(uv_b_matches, img_b_shape, num_non_matches_per_ma
     # for each in uv_a, we want non-matches
     # first just randomly sample "non_matches"
     # we will later move random samples that were too close to being matches
-    uv_b_non_matches = (uv_b_non_matches[0].view(num_matches,num_non_matches_per_match), uv_b_non_matches[1].view(num_matches,num_non_matches_per_match))
+    uv_b_non_matches = (uv_b_non_matches[0].reshape(num_matches,num_non_matches_per_match), uv_b_non_matches[1].reshape(num_matches,num_non_matches_per_match))
 
     # uv_b_matches can now be used to make sure no "non_matches" are too close
     # to preserve tensor size, rather than pruning, we can perturb these in pixel space
@@ -343,8 +343,8 @@ def create_non_correspondences(uv_b_matches, img_b_shape, num_non_matches_per_ma
     diffs_0 = copied_uv_b_matches_0 - uv_b_non_matches[0].type(dtype_float)
     diffs_1 = copied_uv_b_matches_1 - uv_b_non_matches[1].type(dtype_float)
 
-    diffs_0_flattened = diffs_0.view(-1,1)
-    diffs_1_flattened = diffs_1.view(-1,1)
+    diffs_0_flattened = diffs_0.reshape(-1,1)
+    diffs_1_flattened = diffs_1.reshape(-1,1)
 
     diffs_0_flattened = torch.abs(diffs_0_flattened).squeeze(1)
     diffs_1_flattened = torch.abs(diffs_1_flattened).squeeze(1)
@@ -365,8 +365,8 @@ def create_non_correspondences(uv_b_matches, img_b_shape, num_non_matches_per_ma
     random_vector = torch.randn(len(need_to_be_perturbed))*std_dev + minimal_perturb_vector
     perturb_vector = need_to_be_perturbed*random_vector
 
-    uv_b_non_matches_0_flat = uv_b_non_matches[0].view(-1,1).type(dtype_float).squeeze(1)
-    uv_b_non_matches_1_flat = uv_b_non_matches[1].view(-1,1).type(dtype_float).squeeze(1)
+    uv_b_non_matches_0_flat = uv_b_non_matches[0].reshape(-1,1).type(dtype_float).squeeze(1)
+    uv_b_non_matches_1_flat = uv_b_non_matches[1].reshape(-1,1).type(dtype_float).squeeze(1)
 
     uv_b_non_matches_0_flat = uv_b_non_matches_0_flat + perturb_vector
     uv_b_non_matches_1_flat = uv_b_non_matches_1_flat + perturb_vector
@@ -457,6 +457,7 @@ def batch_find_pixel_correspondences(img_a_depth, img_a_pose, img_b_depth, img_b
         dtype_float = torch.cuda.FloatTensor
         dtype_long = torch.cuda.LongTensor
 
+
     if uv_a is None:
         uv_a = pytorch_rand_select_pixel(width=image_width,height=image_height, num_samples=num_attempts)
     else:
@@ -480,8 +481,14 @@ def batch_find_pixel_correspondences(img_a_depth, img_a_pose, img_b_depth, img_b
         # nonzero = (torch.nonzero(mask_a)).type(dtype_long)
         # uv_a_vec = (nonzero[:,1], nonzero[:,0])
 
-        # Always use this line        
-        uv_a_vec_flattened = uv_a_vec[1]*image_width+uv_a_vec[0]
+        # Always use this line   
+        # print("-"*10)     
+        # print(image_width)
+        # print(image_height)
+        # print(max(uv_a_vec[0]))
+        # print(max(uv_a_vec[1]))
+        uv_a_vec_flattened = (torch.floor(uv_a_vec[1])*image_width+uv_a_vec[0]).type(dtype_long)
+        
 
 
     if K is None:
@@ -495,7 +502,11 @@ def batch_find_pixel_correspondences(img_a_depth, img_a_pose, img_b_depth, img_b
     img_a_depth_torch = torch.squeeze(img_a_depth_torch, 0)
     img_a_depth_torch = img_a_depth_torch.view(-1,1)
 
-    
+    # print("A" + "-"*50)
+    # print(max(uv_a_vec_flattened))
+    # print(img_a_depth_torch.shape)
+    # print("A" + "-"*50)
+
     depth_vec = torch.index_select(img_a_depth_torch, 0, uv_a_vec_flattened)*1.0/DEPTH_IM_SCALE
     depth_vec = depth_vec.squeeze(1)
     
@@ -591,6 +602,12 @@ def batch_find_pixel_correspondences(img_a_depth, img_a_pose, img_b_depth, img_b
 
     uv_b_vec_flattened = (v2_vec.type(dtype_long)*image_width+u2_vec.type(dtype_long))  # simply round to int -- good enough 
                                                                        # occlusion check for smooth surfaces
+
+    # print("B" + "-"*50)
+    # print(max(uv_b_vec_flattened) if len(uv_b_vec_flattened)!=0 else -1)
+    # print(img_b_depth_torch.shape)
+    # print("B" + "-"*50)
+
 
     depth2_vec = torch.index_select(img_b_depth_torch, 0, uv_b_vec_flattened)*1.0/1000
     depth2_vec = depth2_vec.squeeze(1)

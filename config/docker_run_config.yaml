@@ -17,3 +17,8 @@ iiwa-2:
 wei:
   wei:
     path_to_data_directory: '/home/wei/data'
+    
+    
+SRL-DSK-003:
+  michelism:
+    path_to_data_directory: '/home/michelism/Data'

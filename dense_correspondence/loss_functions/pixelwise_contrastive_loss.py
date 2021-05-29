@@ -5,7 +5,7 @@ from torch.autograd import Variable
 class PixelwiseContrastiveLoss(object):
 
     def __init__(self, image_shape, config=None):
-    	self.type = "pixelwise_contrastive"
+        self.type = "pixelwise_contrastive"
         self.image_width  = image_shape[1]
         self.image_height = image_shape[0]
 
@@ -162,7 +162,7 @@ class PixelwiseContrastiveLoss(object):
             matches_a_descriptors = matches_a_descriptors.unsqueeze(0)
             matches_b_descriptors = matches_b_descriptors.unsqueeze(0)
 
-        match_loss = 1.0 / num_matches * (matches_a_descriptors - matches_b_descriptors).pow(2).sum()
+        match_loss = torch.div(1.0, num_matches * (matches_a_descriptors - matches_b_descriptors).pow(2).sum())
 
         return match_loss, matches_a_descriptors, matches_b_descriptors
 
@@ -189,8 +189,11 @@ class PixelwiseContrastiveLoss(object):
         :rtype:
         """
 
-        non_matches_a_descriptors = torch.index_select(image_a_pred, 1, non_matches_a).squeeze()
-        non_matches_b_descriptors = torch.index_select(image_b_pred, 1, non_matches_b).squeeze()
+        try:
+            non_matches_a_descriptors = torch.index_select(image_a_pred, 1, non_matches_a.long()).squeeze()
+            non_matches_b_descriptors = torch.index_select(image_b_pred, 1, non_matches_b.long()).squeeze()
+        except:
+            import pdb; pdb.set_trace()
 
         # crazily enough, if there is only one element to index_select into
         # above, then the first dimension is collapsed down, and we end up 
@@ -292,14 +295,14 @@ class PixelwiseContrastiveLoss(object):
         non_match_loss_vec, num_hard_negatives, _, _ = PCL.non_match_descriptor_loss(image_a_pred, image_b_pred, non_matches_a,
                                                                  non_matches_b, M=M_descriptor, invert=invert)
 
-        num_non_matches = long(non_match_loss_vec.size()[0])
+        num_non_matches = int(non_match_loss_vec.size()[0])
 
 
         non_match_loss = non_match_loss_vec.sum()
 
         if self._debug:
             self._debug_data['num_hard_negatives'] = num_hard_negatives
-            self._debug_data['fraction_hard_negatives'] = num_hard_negatives * 1.0/num_non_matches
+            self._debug_data['fraction_hard_negatives'] = num_hard_negatives * (1.0/num_non_matches) if num_non_matches!=0 else 0
 
         return non_match_loss, num_hard_negatives
 

@@ -204,7 +204,7 @@ class DenseCorrespondenceNetwork(nn.Module):
         self._normalize_tensor_transform = transforms.Normalize(self.image_mean, self.image_std_dev)
 
 
-    def forward_on_img(self, img, cuda=True):
+    def forward_on_img(self, img, cuda=False):
         """
         Runs the network forward on an image
         :param img: img is an image as a numpy array in opencv format [0,255]
@@ -228,7 +228,8 @@ class DenseCorrespondenceNetwork(nn.Module):
         warnings.warn("use forward method instead", DeprecationWarning)
 
         img = img.unsqueeze(0)
-        img = torch.tensor(img, device=torch.device("cuda"))
+        #img = torch.tensor(img, device=torch.device("cuda"))
+        img = torch.tensor(img)
         res = self.fcn(img)
         res = res.squeeze(0)
         res = res.permute(1, 2, 0)
@@ -283,7 +284,8 @@ class DenseCorrespondenceNetwork(nn.Module):
         img_tensor = img_tensor.unsqueeze(0)
 
         # make sure it's on the GPU
-        img_tensor = torch.tensor(img_tensor, device=torch.device("cuda"))
+        #img_tensor = torch.tensor(img_tensor, device=torch.device("cuda"))
+        img_tensor = torch.tensor(img_tensor)
 
 
         res = self.forward(img_tensor) # shape [1,D,H,W]
@@ -352,7 +354,8 @@ class DenseCorrespondenceNetwork(nn.Module):
         dc_source_dir = utils.getDenseCorrespondenceSourceDir()
         sys.path.append(os.path.join(dc_source_dir, 'external/unet-pytorch'))
         from unet_model import UNet
-        model = UNet(num_classes=config["descriptor_dimension"]).cuda()
+        #model = UNet(num_classes=config["descriptor_dimension"]).cuda()
+        model = UNet(num_classes=config["descriptor_dimension"])
         return model
 
 
@@ -432,7 +435,7 @@ class DenseCorrespondenceNetwork(nn.Module):
                 logging.info("loading params with the new style failed, falling back to dcn.fcn.load_state_dict")
                 dcn.fcn.load_state_dict(torch.load(model_param_file))
 
-        dcn.cuda()
+        #dcn.cuda()
         dcn.train()
         dcn.config = config
         return dcn
@@ -498,14 +501,13 @@ class DenseCorrespondenceNetwork(nn.Module):
         best_match_idx is again in (u,v) = (right, down) coordinates
 
         """
-
-        descriptor_at_pixel = res_a[pixel_a[1], pixel_a[0]]
+        descriptor_at_pixel = res_a[int(pixel_a[1]), int(pixel_a[0])]
         height, width, _ = res_a.shape
 
         if debug:
-            print "height: ", height
-            print "width: ", width
-            print "res_b.shape: ", res_b.shape
+            print("height: " + height)
+            print("width: " + width)
+            print("res_b.shape: " + res_b.shape)
 
 
         # non-vectorized version
