@@ -39,7 +39,7 @@ git submodule update --init --recursive
 ### Step 4
 Lastly we get the required environment packages. Anaconda is the most convenient, but you can do it without as well. The most important packages are just numpy, scipy and pytorch. There might be a few more, but you'll have to install them as the errors appear while running the code.
 ```
-conda create -f environment.yml
+conda env create -f environment.yml
 ```
 
 
