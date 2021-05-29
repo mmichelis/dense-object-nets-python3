@@ -20,7 +20,7 @@ After training, testing on some custom images can be done with "live_visualizati
 More or less the same as the original, just without Docker:
 ### Step 1
 ```
-git clone https://github.com/RobotLocomotion/pytorch-dense-correspondence.git
+git clone https://github.com/mmichelis/dense-object-nets-python3.git
 ```
 
 ### Step 2

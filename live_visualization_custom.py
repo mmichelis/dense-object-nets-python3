@@ -15,6 +15,7 @@ os.environ["DC_DATA_DIR"] = os.path.join(os.getcwd(), "Data", "pdc")
 
 from PIL import Image
 
+
 import dense_correspondence_manipulation.utils.utils as utils
 dc_source_dir = utils.getDenseCorrespondenceSourceDir()
 sys.path.append(dc_source_dir)
