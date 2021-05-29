@@ -162,7 +162,7 @@ class PixelwiseContrastiveLoss(object):
             matches_a_descriptors = matches_a_descriptors.unsqueeze(0)
             matches_b_descriptors = matches_b_descriptors.unsqueeze(0)
 
-        match_loss = torch.div(1.0, num_matches * (matches_a_descriptors - matches_b_descriptors).pow(2).sum())
+        match_loss = torch.div(1.0, num_matches) * (matches_a_descriptors - matches_b_descriptors).pow(2).sum()
 
         return match_loss, matches_a_descriptors, matches_b_descriptors
 
@@ -188,12 +188,8 @@ class PixelwiseContrastiveLoss(object):
         :return: torch.FloatTensor with shape torch.Shape([num_non_matches])
         :rtype:
         """
-
-        try:
-            non_matches_a_descriptors = torch.index_select(image_a_pred, 1, non_matches_a.long()).squeeze()
-            non_matches_b_descriptors = torch.index_select(image_b_pred, 1, non_matches_b.long()).squeeze()
-        except:
-            import pdb; pdb.set_trace()
+        non_matches_a_descriptors = torch.index_select(image_a_pred, 1, non_matches_a.long()).squeeze()
+        non_matches_b_descriptors = torch.index_select(image_b_pred, 1, non_matches_b.long()).squeeze()
 
         # crazily enough, if there is only one element to index_select into
         # above, then the first dimension is collapsed down, and we end up 

@@ -300,7 +300,7 @@ class DenseCorrespondenceTraining(object):
                 background_non_matches_a, background_non_matches_b, \
                 blind_non_matches_a, blind_non_matches_b, \
                 metadata = data
-                print(f"Doing iteration {i} now with data: {metadata}")
+                #print(f"Doing iteration {i} now with data: {metadata}")
 
                 if (match_type == -1).all():
                     print("\n empty data, continuing \n")
@@ -406,6 +406,8 @@ class DenseCorrespondenceTraining(object):
 
                 loss.backward()
                 optimizer.step()
+
+                print(f"LOSS: {loss.item():.4e}")
 
                 #if i % 10 == 0:
                 # TPV.update(self._dataset, dcn, loss_current_iteration, now_training_object_id=metadata["object_id"])
