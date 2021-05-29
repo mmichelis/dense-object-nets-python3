@@ -358,32 +358,33 @@ class DenseCorrespondenceTraining(object):
                 blind_non_matches_b = Variable(blind_non_matches_b.squeeze(0), requires_grad=False)
 
 
-                import cv2
-                im1 = (255*(img_a-img_a.min())/(img_a.max()-img_a.min()))[0].numpy().astype('uint8').transpose([1,2,0])
-                im1 = np.ascontiguousarray(im1)
-                im2 = (255*(img_b-img_b.min())/(img_b.max()-img_b.min()))[0].numpy().astype('uint8').transpose([1,2,0])
-                im2 = np.ascontiguousarray(im2)
-
-                # First show the matches:
-                match_pixels_a = np.stack([blind_non_matches_a % 640, blind_non_matches_a // 640], axis=1)
-                match_pixels_b = np.stack([blind_non_matches_b % 640, blind_non_matches_b // 640], axis=1)
-
-                iter = 0
-                for m_a, m_b in zip(match_pixels_a, match_pixels_b):
-                    iter += 1
-                    color = (np.random.choice(range(256), size=3)).tolist()
-                    im1 = cv2.circle(im1, m_a, 5, color)
-                    im2 = cv2.circle(im2, m_b, 5, color)
-
-                    if iter > 5:
-                        break
-
-                cv2.imwrite("debug.png", np.hstack([im1, im2]))
-
-                import pdb; pdb.set_trace()
-
                 if (len(masked_non_matches_b)!=0 and max(masked_non_matches_b) > 307200) or max(masked_non_matches_a) > 307200 or max(blind_non_matches_a) > 307200 or (len(blind_non_matches_b)!=0 and max(blind_non_matches_b) > 307200) or max(background_non_matches_a) > 307200 or (len(background_non_matches_b)!=0 and max(background_non_matches_b) > 307200): 
+                    import cv2
+                    im1 = (255*(img_a-img_a.min())/(img_a.max()-img_a.min()))[0].numpy().astype('uint8').transpose([1,2,0])
+                    im1 = np.ascontiguousarray(im1)
+                    im2 = (255*(img_b-img_b.min())/(img_b.max()-img_b.min()))[0].numpy().astype('uint8').transpose([1,2,0])
+                    im2 = np.ascontiguousarray(im2)
+                    im = np.hstack([im1, im2])
+
+                    # First show the matches:
+                    match_pixels_a = np.stack([blind_non_matches_a % 640, blind_non_matches_a // 640], axis=1).astype(int)
+                    match_pixels_b = np.stack([(blind_non_matches_b % 640) + 640, blind_non_matches_b // 640], axis=1).astype(int)
+
+                    iter = 0
+                    for m_a, m_b in zip(match_pixels_a, match_pixels_b):
+                        iter += 1
+                        color = (np.random.choice(range(256), size=3)).tolist()
+                        im = cv2.circle(im, m_a, 5, color)
+                        im = cv2.circle(im, m_b, 5, color)
+                        im = cv2.line(im, m_a, m_b, color, thickness=1)
+                        
+                        if iter > 5:
+                            break
+
+                    cv2.imwrite("debug.png", im)
+
                     import pdb; pdb.set_trace()
+
 
                 optimizer.zero_grad()
                 self.adjust_learning_rate(optimizer, loss_current_iteration)
