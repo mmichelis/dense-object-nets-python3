@@ -86,8 +86,6 @@ class DenseCorrespondenceTraining(object):
         batch_size = self._config['training']['batch_size']
         num_workers = self._config['training']['num_workers']
 
-        import pdb; pdb.set_trace()
-
         if self._dataset is None:
             self._dataset = SpartanDataset.make_default_10_scenes_drill()
 
@@ -95,8 +93,8 @@ class DenseCorrespondenceTraining(object):
         self._dataset.load_all_pose_data()
         self._dataset.set_parameters_from_training_config(self._config)
 
-        self._data_loader = torch.utils.data.DataLoader(self._dataset, batch_size=1,
-                                          shuffle=False, num_workers=1, drop_last=True)
+        self._data_loader = torch.utils.data.DataLoader(self._dataset, batch_size=batch_size,
+                                          shuffle=False, num_workers=num_workers, drop_last=True)
 
         # create a test dataset
         if self._config["training"]["compute_test_loss"]:

@@ -738,6 +738,7 @@ class SpartanDataset(DenseCorrespondenceDataset):
         mask_a_flat = image_a_mask_torch.view(-1,1).squeeze(1)
         blind_non_matches_a = (mask_a_flat - matches_a_mask).nonzero()
 
+
         no_blind_matches_found = False
         if len(blind_non_matches_a) == 0:
             no_blind_matches_found = True
@@ -767,6 +768,7 @@ class SpartanDataset(DenseCorrespondenceDataset):
 
         if no_blind_matches_found:
             blind_non_matches_a = blind_non_matches_b = SD.empty_tensor()
+
 
 
         if self.debug:

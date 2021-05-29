@@ -118,6 +118,7 @@ def random_sample_from_masked_image_torch(img_mask, num_samples):
     rand_indices = torch.floor(rand_numbers).long()
     uv_vec_flattened = torch.index_select(mask_indices_flat, 0, rand_indices).squeeze(1)
     uv_vec = utils.flattened_pixel_locations_to_u_v(uv_vec_flattened, image_width)
+
     return uv_vec
 
 def pinhole_projection_image_to_world(uv, z, K):
@@ -487,7 +488,7 @@ def batch_find_pixel_correspondences(img_a_depth, img_a_pose, img_b_depth, img_b
         # print(image_height)
         # print(max(uv_a_vec[0]))
         # print(max(uv_a_vec[1]))
-        uv_a_vec_flattened = (torch.floor(uv_a_vec[1])*image_width+uv_a_vec[0]).type(dtype_long)
+        uv_a_vec_flattened = (uv_a_vec[1]*image_width+uv_a_vec[0]).type(dtype_long)
         
 
 

@@ -321,7 +321,7 @@ def flattened_pixel_locations_to_u_v(flat_pixel_locations, image_width):
     the pixel and the second column is the v coordinate
 
     """
-    return (flat_pixel_locations%image_width, flat_pixel_locations/image_width)
+    return (flat_pixel_locations%image_width, flat_pixel_locations//image_width)
 
 def uv_to_flattened_pixel_locations(uv_tuple, image_width):
     """
