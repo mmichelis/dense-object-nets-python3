@@ -12,7 +12,7 @@ if len(sys.argv) < 2:
 
 
 logs = []
-datasets_to_download_config = yaml.load(file(sys.argv[1]))
+datasets_to_download_config = yaml.load(open(sys.argv[1]))
 pdc_root_dir = os.getcwd()
 
 
@@ -27,7 +27,7 @@ print("pdc_data_dir" + pdc_data_dir)
 
 def add_datset(path):
     global logs
-    single_object_dataset = yaml.load(file(path))
+    single_object_dataset = yaml.load(open(path))
     for j in single_object_dataset["train"]:
         if j not in logs:
             logs.append(j)
